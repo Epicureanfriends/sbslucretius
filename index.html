@@ -252,8 +252,8 @@
             border-radius: 5px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             z-index: 1002;
-            text-align: center;
-            width: 350px; /* Adjusted for readability */
+            text-align: left;
+            width: 350px;
         }
         body.dark-mode #about-popup {
             background: #333;
@@ -263,7 +263,7 @@
         #about-popup a {
             color: #0066cc;
             text-decoration: none;
-            display: block; /* Each link on its own line */
+            display: block;
             margin: 5px 0;
         }
         #about-popup a:hover {
@@ -329,12 +329,12 @@
     <div id="about-popup">
         <p>This page was prepared by Cassius Amicus with the assistance of many other participants at the EpicureanFriends.com forum. For more information about the use of this website, <a href="https://www.epicureanfriends.com/thread/4362-lucretius-side-by-side-english-and-latin-versions/" target="_blank">click here</a>.</p>
         <h3>Navigate to Sections:</h3>
-        <a href="#book-one-basic-atomism" class="section-link">Book One - Basic Atomism</a>
-        <a href="#book-two-the-nature-of-the-soul" class="section-link">Book Two - The Nature Of The Soul</a>
-        <a href="#book-three-death-as-the-end-of-life" class="section-link">Book Three - Death As The End of Life</a>
-        <a href="#book-four-images-and-the-senses" class="section-link">Book Four - Images and the Senses</a>
-        <a href="#book-five-formation-of-worlds-and-civilizations" class="section-link">Book Five - Formation of Worlds and Civilizations</a>
-        <a href="#book-six-adversities-the-plague-of-athens-conclusion" class="section-link">Book Six - Adversities, The Plague of Athens, Conclusion</a>
+        <a href="#" onclick="scrollToSection('book-one-basic-atomism'); document.getElementById('about-popup').style.display='none'; return false;">Book One - Basic Atomism</a>
+        <a href="#" onclick="scrollToSection('book-two-the-nature-of-the-soul'); document.getElementById('about-popup').style.display='none'; return false;">Book Two - The Nature Of The Soul</a>
+        <a href="#" onclick="scrollToSection('book-three-death-as-the-end-of-life'); document.getElementById('about-popup').style.display='none'; return false;">Book Three - Death As The End of Life</a>
+        <a href="#" onclick="scrollToSection('book-four-images-and-the-senses'); document.getElementById('about-popup').style.display='none'; return false;">Book Four - Images and the Senses</a>
+        <a href="#" onclick="scrollToSection('book-five-formation-of-worlds-and-civilizations'); document.getElementById('about-popup').style.display='none'; return false;">Book Five - Formation of Worlds and Civilizations</a>
+        <a href="#" onclick="scrollToSection('book-six-adversities-the-plague-of-athens-conclusion'); document.getElementById('about-popup').style.display='none'; return false;">Book Six - Adversities, The Plague of Athens, Conclusion</a>
     </div>
 
     <script>
@@ -342,7 +342,7 @@
             { id: 'col1', wrapper: 'wrapper-lucretius', file: 'file1.md', toggle: 'col-lucretius' },
             { id: 'col2', wrapper: 'wrapper-bailey', file: 'file2.md', toggle: 'col-bailey' },
             { id: 'col3', wrapper: 'wrapper-dunster', file: 'file3.md', toggle: 'col-dunster' },
-            { id: 'col4', wrapper: 'wrapper-munro', file:unos 'file4.md', toggle: 'col-munro' }
+            { id: 'col4', wrapper: 'wrapper-munro', file: 'file4.md', toggle: 'col-munro' }
         ];
         let headingMap = {};
         let isProgrammaticScroll = false;
@@ -353,24 +353,28 @@
         let currentSectionIndex = -1;
 
         async function loadContent() {
-            for (let i = 0; i < columns.length; i++) {
-                const col = columns[i];
-                const response = await fetch(col.file);
-                const text = await response.text();
-                const html = marked.parse(text).replace(/<h([1-4])>(.*?)<\/h\1>/g, (match, level, content) => {
-                    const id = content.trim().toLowerCase().replace(/\s+/g, '-');
-                    if (!headingMap[id]) {
-                        headingMap[id] = [];
-                        sectionIds.push(id);
-                    }
-                    headingMap[id][i] = `${id}-${i}`;
-                    return `<h${level} id="${id}-${i}" class="heading">${content}</h${level}>`;
-                });
-                document.getElementById(col.id).innerHTML = html;
-                originalContent[col.id] = html;
+            try {
+                for (let i = 0; i < columns.length; i++) {
+                    const col = columns[i];
+                    const response = await fetch(col.file);
+                    if (!response.ok) throw new Error(`Failed to fetch ${col.file}`);
+                    const text = await response.text();
+                    const html = marked.parse(text).replace(/<h([1-4])>(.*?)<\/h\1>/g, (match, level, content) => {
+                        const id = content.trim().toLowerCase().replace(/\s+/g, '-');
+                        if (!headingMap[id]) {
+                            headingMap[id] = [];
+                            sectionIds.push(id);
+                        }
+                        headingMap[id][i] = `${id}-${i}`;
+                        return `<h${level} id="${id}-${i}" class="heading">${content}</h${level}>`;
+                    });
+                    document.getElementById(col.id).innerHTML = html;
+                    originalContent[col.id] = html;
+                }
+                setupNavigation();
+            } catch (error) {
+                console.error('Error loading content:', error);
             }
-            setupNavigation();
-            setupPopupLinks(); // New function for popup links
             const hash = window.location.hash.slice(1);
             if (hash && headingMap[hash]) {
                 scrollToSection(hash);
@@ -395,30 +399,14 @@
             });
         }
 
-        function setupPopupLinks() {
-            const popupLinks = document.querySelectorAll('#about-popup a.section-link');
-            popupLinks.forEach(link => {
-                const id = link.getAttribute('href').slice(1); // Remove '#'
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    if (headingMap[id]) {
-                        scrollToSection(id);
-                        updateURL(id);
-                        currentSectionIndex = sectionIds.indexOf(id);
-                        document.getElementById('about-popup').style.display = 'none'; // Close popup
-                    } else {
-                        console.log(`Section "${id}" not found in content.`);
-                    }
-                });
-            });
-        }
-
         function scrollToSection(id) {
             isProgrammaticScroll = true;
             columns.forEach((col, i) => {
                 const el = document.getElementById(headingMap[id]?.[i]);
                 if (el) {
                     el.scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    console.log(`No element found for ID: ${headingMap[id]?.[i]}`);
                 }
             });
             const navLinks = document.querySelectorAll('#nav-panel a');
