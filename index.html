@@ -125,14 +125,14 @@
             padding: 10px;
             border: 1px solid #ccc;
             z-index: 1001;
-            width: 300px; /* Widened to ensure options fit on one line */
+            width: 300px;
         }
         body.dark-mode #column-menu {
             background: #333;
             border-color: #555;
         }
         #column-menu label, #column-menu a {
-            display: block; /* Ensures each item takes its own line */
+            display: block;
             margin-top: 10px;
             color: #000;
             text-decoration: none;
@@ -290,12 +290,12 @@
             <button id="column-toggle">☰</button>
             <div id="column-menu">
                 <a href="#" id="about-link">About-Navigation</a>
-                <a href="#book-one-basic-atomism">Book One - Basic Atomism</a>
-                <a href="#book-two-the-nature-of-the-soul">Book Two - The Nature Of The Soul</a>
-                <a href="#book-three-death-as-the-end-of-life">Book Three - Death As The End of Life</a>
-                <a href="#book-four-images-and-the-senses">Book Four - Images and the Senses</a>
-                <a href="#book-five-formation-of-worlds-and-civilizations">Book Five - Formation of Worlds and Civilizations</a>
-                <a href="#book-six-adversities-the-plague-of-athens-conclusion">Book Six - Adversities, The Plague of Athens, Conclusion</a>
+                <a href="#book-one-basic-atomism" class="section-link">Book One - Basic Atomism</a>
+                <a href="#book-two-the-nature-of-the-soul" class="section-link">Book Two - The Nature Of The Soul</a>
+                <a href="#book-three-death-as-the-end-of-life" class="section-link">Book Three - Death As The End of Life</a>
+                <a href="#book-four-images-and-the-senses" class="section-link">Book Four - Images and the Senses</a>
+                <a href="#book-five-formation-of-worlds-and-civilizations" class="section-link">Book Five - Formation of Worlds and Civilizations</a>
+                <a href="#book-six-adversities-the-plague-of-athens-conclusion" class="section-link">Book Six - Adversities, The Plague of Athens, Conclusion</a>
                 <label><input type="checkbox" id="col-lucretius" checked> Lucretius</label>
                 <label><input type="checkbox" id="col-bailey" checked> Cyril Bailey</label>
                 <label><input type="checkbox" id="col-dunster" checked> Samuel Dunster</label>
@@ -366,6 +366,7 @@
                 originalContent[col.id] = html;
             }
             setupNavigation();
+            setupColumnMenuLinks(); // New function to handle column menu links
             const hash = window.location.hash.slice(1);
             if (hash && headingMap[hash]) {
                 scrollToSection(hash);
@@ -387,6 +388,22 @@
                     currentSectionIndex = sectionIds.indexOf(id);
                 });
                 nav.appendChild(a);
+            });
+        }
+
+        function setupColumnMenuLinks() {
+            const columnMenuLinks = document.querySelectorAll('#column-menu a.section-link');
+            columnMenuLinks.forEach(link => {
+                const id = link.getAttribute('href').slice(1); // Remove the '#'
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    if (headingMap[id]) {
+                        scrollToSection(id);
+                        updateURL(id);
+                        currentSectionIndex = sectionIds.indexOf(id);
+                        document.getElementById('column-menu').style.display = 'none'; // Close menu after click
+                    }
+                });
             });
         }
 
