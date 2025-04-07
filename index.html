@@ -253,6 +253,7 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             z-index: 1002;
             text-align: center;
+            width: 350px; /* Adjusted for readability */
         }
         body.dark-mode #about-popup {
             background: #333;
@@ -262,6 +263,8 @@
         #about-popup a {
             color: #0066cc;
             text-decoration: none;
+            display: block; /* Each link on its own line */
+            margin: 5px 0;
         }
         #about-popup a:hover {
             text-decoration: underline;
@@ -290,12 +293,6 @@
             <button id="column-toggle">☰</button>
             <div id="column-menu">
                 <a href="#" id="about-link">About-Navigation</a>
-                <a href="#book-one-basic-atomism" class="section-link">Book One - Basic Atomism</a>
-                <a href="#book-two-the-nature-of-the-soul" class="section-link">Book Two - The Nature Of The Soul</a>
-                <a href="#book-three-death-as-the-end-of-life" class="section-link">Book Three - Death As The End of Life</a>
-                <a href="#book-four-images-and-the-senses" class="section-link">Book Four - Images and the Senses</a>
-                <a href="#book-five-formation-of-worlds-and-civilizations" class="section-link">Book Five - Formation of Worlds and Civilizations</a>
-                <a href="#book-six-adversities-the-plague-of-athens-conclusion" class="section-link">Book Six - Adversities, The Plague of Athens, Conclusion</a>
                 <label><input type="checkbox" id="col-lucretius" checked> Lucretius</label>
                 <label><input type="checkbox" id="col-bailey" checked> Cyril Bailey</label>
                 <label><input type="checkbox" id="col-dunster" checked> Samuel Dunster</label>
@@ -331,6 +328,13 @@
 
     <div id="about-popup">
         <p>This page was prepared by Cassius Amicus with the assistance of many other participants at the EpicureanFriends.com forum. For more information about the use of this website, <a href="https://www.epicureanfriends.com/thread/4362-lucretius-side-by-side-english-and-latin-versions/" target="_blank">click here</a>.</p>
+        <h3>Navigate to Sections:</h3>
+        <a href="#book-one-basic-atomism" class="section-link">Book One - Basic Atomism</a>
+        <a href="#book-two-the-nature-of-the-soul" class="section-link">Book Two - The Nature Of The Soul</a>
+        <a href="#book-three-death-as-the-end-of-life" class="section-link">Book Three - Death As The End of Life</a>
+        <a href="#book-four-images-and-the-senses" class="section-link">Book Four - Images and the Senses</a>
+        <a href="#book-five-formation-of-worlds-and-civilizations" class="section-link">Book Five - Formation of Worlds and Civilizations</a>
+        <a href="#book-six-adversities-the-plague-of-athens-conclusion" class="section-link">Book Six - Adversities, The Plague of Athens, Conclusion</a>
     </div>
 
     <script>
@@ -338,7 +342,7 @@
             { id: 'col1', wrapper: 'wrapper-lucretius', file: 'file1.md', toggle: 'col-lucretius' },
             { id: 'col2', wrapper: 'wrapper-bailey', file: 'file2.md', toggle: 'col-bailey' },
             { id: 'col3', wrapper: 'wrapper-dunster', file: 'file3.md', toggle: 'col-dunster' },
-            { id: 'col4', wrapper: 'wrapper-munro', file: 'file4.md', toggle: 'col-munro' }
+            { id: 'col4', wrapper: 'wrapper-munro', file:unos 'file4.md', toggle: 'col-munro' }
         ];
         let headingMap = {};
         let isProgrammaticScroll = false;
@@ -366,7 +370,7 @@
                 originalContent[col.id] = html;
             }
             setupNavigation();
-            setupColumnMenuLinks(); // New function to handle column menu links
+            setupPopupLinks(); // New function for popup links
             const hash = window.location.hash.slice(1);
             if (hash && headingMap[hash]) {
                 scrollToSection(hash);
@@ -391,17 +395,19 @@
             });
         }
 
-        function setupColumnMenuLinks() {
-            const columnMenuLinks = document.querySelectorAll('#column-menu a.section-link');
-            columnMenuLinks.forEach(link => {
-                const id = link.getAttribute('href').slice(1); // Remove the '#'
+        function setupPopupLinks() {
+            const popupLinks = document.querySelectorAll('#about-popup a.section-link');
+            popupLinks.forEach(link => {
+                const id = link.getAttribute('href').slice(1); // Remove '#'
                 link.addEventListener('click', (e) => {
                     e.preventDefault();
                     if (headingMap[id]) {
                         scrollToSection(id);
                         updateURL(id);
                         currentSectionIndex = sectionIds.indexOf(id);
-                        document.getElementById('column-menu').style.display = 'none'; // Close menu after click
+                        document.getElementById('about-popup').style.display = 'none'; // Close popup
+                    } else {
+                        console.log(`Section "${id}" not found in content.`);
                     }
                 });
             });
