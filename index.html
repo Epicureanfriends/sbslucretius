@@ -125,18 +125,19 @@
             padding: 10px;
             border: 1px solid #ccc;
             z-index: 1001;
+            width: 300px; /* Widened to ensure options fit on one line */
         }
         body.dark-mode #column-menu {
             background: #333;
             border-color: #555;
         }
-        #column-menu a {
-            display: block;
+        #column-menu label, #column-menu a {
+            display: block; /* Ensures each item takes its own line */
             margin-top: 10px;
             color: #000;
             text-decoration: none;
         }
-        body.dark-mode #column-menu a {
+        body.dark-mode #column-menu label, body.dark-mode #column-menu a {
             color: #ddd;
         }
         #column-menu a:hover {
@@ -288,15 +289,21 @@
             <button id="theme-toggle">🌞</button>
             <button id="column-toggle">☰</button>
             <div id="column-menu">
-                <label><input type="checkbox" id="col-lucretius" checked> Lucretius</label><br>
-                <label><input type="checkbox" id="col-bailey" checked> Cyril Bailey</label><br>
-                <label><input type="checkbox" id="col-dunster" checked> Samuel Dunster</label><br>
+                <a href="#" id="about-link">About-Navigation</a>
+                <a href="#book-one-basic-atomism">Book One - Basic Atomism</a>
+                <a href="#book-two-the-nature-of-the-soul">Book Two - The Nature Of The Soul</a>
+                <a href="#book-three-death-as-the-end-of-life">Book Three - Death As The End of Life</a>
+                <a href="#book-four-images-and-the-senses">Book Four - Images and the Senses</a>
+                <a href="#book-five-formation-of-worlds-and-civilizations">Book Five - Formation of Worlds and Civilizations</a>
+                <a href="#book-six-adversities-the-plague-of-athens-conclusion">Book Six - Adversities, The Plague of Athens, Conclusion</a>
+                <label><input type="checkbox" id="col-lucretius" checked> Lucretius</label>
+                <label><input type="checkbox" id="col-bailey" checked> Cyril Bailey</label>
+                <label><input type="checkbox" id="col-dunster" checked> Samuel Dunster</label>
                 <label><input type="checkbox" id="col-munro" checked> H.A.J. Munro</label>
                 <div class="font-controls">
                     <button id="font-decrease">A−</button>
                     <button id="font-increase">A+</button>
                 </div>
-                <a href="#" id="about-link">About</a>
             </div>
         </div>
     </header>
